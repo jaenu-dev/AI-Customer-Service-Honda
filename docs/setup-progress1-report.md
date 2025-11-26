@@ -28,12 +28,12 @@ Workflow pada tahap awal:
 - n8n → OpenAI API
 - Semua berjalan di lokal dan siap digunakan untuk workflow selanjutnya.
 
-Diagram arsitektur terlampir pada file `docs/architecture.png`.
+Diagram arsitektur terlampir pada file `docs/n8n.png`.
 
 ---
 
 ## 4. Bukti & Artefak
-- Link GitHub repo: [link repo kamu]
+- Link GitHub repo: [https://github.com/jaenu-dev/AI-Customer-Service-Honda]
 - Screenshots tersimpan di folder: `/docs/screenshots/`
   - docker install
   - node.js install
