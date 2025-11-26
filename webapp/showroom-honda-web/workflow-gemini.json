@@ -1,0 +1,131 @@
+{
+  "name": "workflow-gemini",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gemini-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4aea0fef-ab96-4c11-9450-44fb692e0fdc",
+      "name": "Webhook",
+      "webhookId": "dcfcbcbb-c907-4cae-8ec4-0aeb21ec27e8"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ==========================================\n// NODE 2: PREPARE DATA\n// ==========================================\n\n// Ambil data dari webhook\nconst webhookData = $input.first().json;\n\n// Extract question dari berbagai kemungkinan format\nlet question = webhookData.question || \n               webhookData.body?.question || \n               webhookData.query?.question ||\n               '';\n\n// Validasi: question tidak boleh kosong\nif (!question || question.trim() === '') {\n  throw new Error('Question is required. Please provide a question in the request body.');\n}\n\n// API Key Gemini (GANTI DENGAN API KEY ANDA!)\nconst apiKey = 'GANTI_DENGAN_API_KEY_GEMINI_ANDA'; \n// PENTING: Ganti dengan API key Gemini Anda yang asli!\n\n// Validasi API key\nif (!apiKey) {\n  throw new Error('Please configure your Gemini API key in the code!');\n}\n\n// Return data yang sudah dipreparasi\nreturn [{\n  json: {\n    question: question.trim(),\n    apiKey: apiKey,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "06c6deef-cc02-4085-854e-fdeaa17b9997",
+      "name": "Prepare Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ==========================================\n// NODE 3: CALL GEMINI API\n// ==========================================\n\n// Ambil data dari node sebelumnya\nconst inputData = $input.first().json;\nconst question = inputData.question;\nconst apiKey = inputData.apiKey;\n\n// Gemini API endpoint\nconst apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';\n\n// Prepare request body untuk Gemini\nconst requestBody = {\n  contents: [{\n    parts: [{\n      text: question\n    }]\n  }],\n  generationConfig: {\n    temperature: 0.7,\n    maxOutputTokens: 2000,\n    topP: 0.8,\n    topK: 40\n  }\n};\n\n// Log untuk debug\nconsole.log('Calling Gemini API...');\nconsole.log('Question:', question);\n\ntry {\n  // Call Gemini API menggunakan n8n helper\n  const response = await this.helpers.httpRequest({\n    method: 'POST',\n    url: apiUrl,\n    headers: {\n      'Content-Type': 'application/json',\n      'x-goog-api-key': apiKey\n    },\n    body: requestBody,\n    json: true,\n    timeout: 30000 // 30 detik timeout\n  });\n  \n  console.log('Gemini API call successful!');\n  \n  // Return response dari Gemini\n  return [{\n    json: {\n      question: question,\n      geminiResponse: response\n    }\n  }];\n  \n} catch (error) {\n  console.error('Error calling Gemini API:', error.message);\n  \n  // Return error yang informatif\n  return [{\n    json: {\n      error: true,\n      message: 'Failed to call Gemini API: ' + error.message,\n      question: question\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "bbdf8d50-7460-4bf6-887e-9119c3420770",
+      "name": "Call Gemini API"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ==========================================\n// NODE 4: FORMAT RESPONSE\n// ==========================================\n\n// Ambil data dari node sebelumnya\nconst inputData = $input.first().json;\n\n// Cek jika ada error dari node sebelumnya\nif (inputData.error) {\n  return [{\n    json: {\n      success: false,\n      error: inputData.message,\n      question: inputData.question,\n      timestamp: new Date().toISOString()\n    }\n  }];\n}\n\nconst question = inputData.question;\nconst geminiResponse = inputData.geminiResponse;\n\n// Extract answer dari Gemini response\nlet answer = 'No answer available';\nlet tokensUsed = 0;\nlet finishReason = 'unknown';\n\ntry {\n  // Extract text dari candidates\n  if (geminiResponse.candidates && \n      geminiResponse.candidates.length > 0 && \n      geminiResponse.candidates[0].content &&\n      geminiResponse.candidates[0].content.parts &&\n      geminiResponse.candidates[0].content.parts.length > 0) {\n    \n    answer = geminiResponse.candidates[0].content.parts[0].text;\n    finishReason = geminiResponse.candidates[0].finishReason || 'STOP';\n  }\n  \n  // Extract token usage\n  if (geminiResponse.usageMetadata) {\n    tokensUsed = geminiResponse.usageMetadata.totalTokenCount || 0;\n  }\n  \n} catch (error) {\n  console.error('Error extracting answer:', error.message);\n  answer = 'Error extracting answer from Gemini response';\n}\n\n// Format final response\nconst finalResponse = {\n  success: true,\n  data: {\n    question: question,\n    answer: answer,\n    model: 'gemini-2.0-flash-exp',\n    finishReason: finishReason,\n    tokens_used: tokensUsed\n  },\n  metadata: {\n    timestamp: new Date().toISOString(),\n    version: '1.0'\n  }\n};\n\nconsole.log('Response formatted successfully');\n\n// Return formatted response\nreturn [{\n  json: finalResponse\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "fca09c4a-41e5-4a8f-811a-95ea8bf507d6",
+      "name": "Format Response"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        832,
+        0
+      ],
+      "id": "23798bd9-180d-4a32-a3e1-3c03f514e41f",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Data": {
+      "main": [
+        [
+          {
+            "node": "Call Gemini API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Gemini API": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "83e7c37d-e705-492e-a1bc-be2c429e9c04",
+  "meta": {
+    "instanceId": "1cd68a01d44377a9c2aec6815cff1115a267613cfab1d91ebfb1d32d04894f2a"
+  },
+  "id": "3FWm3Yu5Zmzr9cyD",
+  "tags": []
+}

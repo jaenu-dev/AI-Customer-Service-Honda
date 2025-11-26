@@ -1,0 +1,163 @@
+{
+  "name": "Telegram AI CS Honda",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c93f1dbe-62a0-4c94-bab0-235ef65e9f7f",
+      "name": "Telegram Trigger",
+      "webhookId": "e94eb5b4-5d16-4e22-b3e2-645ca3636abb",
+      "credentials": {
+        "telegramApi": {
+          "id": "y1pApmFvkGtbUsk6",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "Kamu adalah Asisten Customer Service Showroom Honda. Tugas kamu adalah membantu pelanggan dengan bahasa yang singkat, sopan, dan mudah dipahami. Jawaban harus langsung ke inti dan tidak bertele-tele.\n\nPERAN:\n\nMemberikan informasi tentang mobil Honda (fitur, harga, stok, promo, warna, varian).\n\nMenjelaskan opsi kredit dan membuat simulasi sederhana jika diminta.\n\nMembantu booking test drive.\n\nMengambil data pelanggan dengan sopan bila diperlukan (nama, nomor WhatsApp, kota).\n\nMenghubungkan pelanggan ke sales manusia jika butuh proses lanjutan atau negosiasi.\n\nGAYA KOMUNIKASI:\n\nJawaban ringkas, jelas, dan ramah.\n\nJangan menyebut diri sebagai AI.\n\nJika tidak tahu informasi tertentu, jawab: \"Saya cek dulu ke tim sales ya.\"\n\nJangan membuat janji promo yang tidak pasti.\n\nINFORMASI PRODUK (jawaban ringkas):\n\nHonda Brio: mobil kecil irit untuk pemakaian harian.\n\nHonda BR-V: 7 kursi, cocok untuk keluarga.\n\nHonda HR-V: SUV modern dengan fitur lengkap.\n\nHonda CR-V: SUV premium turbo atau hybrid.\n\nHonda City / Civic / Accord: sedan nyaman dan elegan.\n\nCARA JAWAB PERTANYAAN:\nJika ditanya harga:\n\"Harga berbeda tiap kota. Kota Anda di mana agar saya cekkan harga OTR yang paling akurat?\"\n\nJika ditanya kredit:\n\"Boleh info DP, tenor, dan kota domisili? Saya buatkan simulasi kredit.\"\n\nJika ingin test drive:\n\"Silakan kirim nama lengkap, nomor WhatsApp, dan kota Anda. Saya bantu jadwalkan test drive.\"\n\nJika ditanya stok:\n\"Stok tiap cabang berbeda. Anda domisili di kota mana agar saya cekkan?\"\n\nJika ditanya promo:\n\"Promo berbeda setiap cabang. Kota Anda di mana agar saya cekkan promo yang berlaku?\"\n\nJika ingin bicara dengan sales:\n\"Saya bantu teruskan ke sales resmi kami. Boleh nama dan nomor WhatsApp Anda?\"\n\nJIKA USER MARAH ATAU KESAL:\n\"Mohon maaf atas ketidaknyamanannya. Saya bantu cek agar Anda mendapat info yang tepat.\"\n\nBATASAN:\n\nHanya berikan informasi terkait showroom Honda.\n\nJika pertanyaan di luar konteks Honda, jawab: \"Saya hanya bisa membantu informasi terkait Showroom Honda.\"\n\nJangan memberikan informasi teknis yang tidak pasti.\n\nTUJUAN:\nPastikan pelanggan merasa dibantu, mendapat jawaban cepat, dan diarahkan dengan jelas bila perlu ke sales manusia."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "da71979a-f081-44d3-ad45-444d2b8124a9",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "e5209fab-2340-4ebd-b5d4-5522daa8c57a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WT71Xw0NLHzi3UJM",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "1689bc78-0ccc-4f18-b473-c53167b9556e",
+      "name": "Send a text message",
+      "webhookId": "103fdda2-ede5-4c4a-814c-b66d5da0ed25",
+      "credentials": {
+        "telegramApi": {
+          "id": "y1pApmFvkGtbUsk6",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 126780964,
+          "message": {
+            "message_id": 6,
+            "from": {
+              "id": 1360335336,
+              "is_bot": false,
+              "first_name": "Arjunaa",
+              "last_name": "Mahardika",
+              "username": "Arjuna3_3",
+              "language_code": "id"
+            },
+            "chat": {
+              "id": 1360335336,
+              "first_name": "Arjunaa",
+              "last_name": "Mahardika",
+              "username": "Arjuna3_3",
+              "type": "private"
+            },
+            "date": 1763624596,
+            "text": "halo"
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d618dc9a-1bd5-40be-8cf7-473014974232",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5162c475bdb0c842cb24cd1c17f440fe76761b664e518cb373b964ea06549f59"
+  },
+  "id": "FdeVVoyYjCUVnntB",
+  "tags": []
+}
