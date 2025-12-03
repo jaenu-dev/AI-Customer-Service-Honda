@@ -21,7 +21,7 @@ Lihat folder pada repository:
 - `/infra` → file docker-compose & config
 - `/docs` → laporan & screenshot
 - `/webapp` → untuk progress 3
-- `/workflows` → export workflow n8n (progress 2 & 3)
+- `/n8n` → export workflow n8n (progress 2 & 3)
 
 ## Kontak
 Nama : Janu Farras Saguna  
