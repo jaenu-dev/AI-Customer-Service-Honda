@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honda AI Customer Service</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="chat-container">
+        <header class="chat-header">
+            <div class="header-title">
+                <span>Customer Service</span>
+                <h1>Honda AI Assistant</h1>
+            </div>
+            <div class="status-dot" title="Online"></div>
+        </header>
+
+        <div class="chat-messages" id="chat-messages">
+            <div class="message ai">
+                Halo! 👋 Saya asisten virtual Honda. Ada yang bisa saya bantu mengenai produk atau layanan kami hari ini?
+            </div>
+            
+            <!-- Typing Indicator -->
+            <div class="typing-indicator" id="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <form id="chat-form" style="display: flex; width: 100%; gap: 10px;">
+                <input type="text" id="chat-input" placeholder="Tulis pertanyaan Anda..." autocomplete="off">
+                <button type="submit" class="send-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
