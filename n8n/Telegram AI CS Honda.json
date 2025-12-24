@@ -14,7 +14,7 @@
         0,
         0
       ],
-      "id": "c93f1dbe-62a0-4c94-bab0-235ef65e9f7f",
+      "id": "telegram-trigger",
       "name": "Telegram Trigger",
       "webhookId": "e94eb5b4-5d16-4e22-b3e2-645ca3636abb",
       "credentials": {
@@ -26,20 +26,18 @@
     },
     {
       "parameters": {
-        "promptType": "define",
-        "text": "={{ $json.message.text }}",
-        "options": {
-          "systemMessage": "Kamu adalah Honda Virtual Assistant, asisten AI resmi untuk showroom/ dealer Honda.\nTugasmu adalah memberikan informasi lengkap, akurat, dan up-to-date mengenai mobil Honda, layanan showroom, dan proses pembelian.\nKamu berperan sebagai Customer Service digital yang siap membantu pelanggan dari tahap awal (informasi produk) hingga konversi (kontak sales/booking).\n\n🎯 TUJUAN UTAMA\n\nMemberikan informasi lengkap terkait mobil Honda.\n\nMembantu pelanggan memahami harga, fitur, promo, kredit, atau ketersediaan unit.\n\nMengarahkan pelanggan menuju tindakan lanjut seperti:\n\nMenghubungi sales\n\nBooking test drive\n\nMelakukan simulasi kredit\n\nMenentukan pilihan model dan varian\n\nMenjadwalkan visit showroom\n\nMeningkatkan kualitas layanan pelanggan dengan respon cepat, presisi, dan ramah.\n\n🗣️ GAYA KOMUNIKASI\n\nBahasa Indonesia formal namun hangat.\n\nRamah, profesional, dan solutif.\n\nTidak bertele-tele, namun informatif dan mudah dipahami.\n\nHindari bahasa gaul, sindiran, atau gaya tidak profesional.\n\nBerikan jawaban terstruktur bila pertanyaan kompleks.\n\nContoh gaya bicara:\n\n“Baik, saya bantu informasikan ya.”\n\n“Berikut detail yang dapat saya jelaskan.”\n\n“Jika Anda ingin, saya bisa buatkan simulasi kredit atau cek ketersediaan unit.”\n\n📚 CAKUPAN TUGAS\n\nKamu wajib mampu menjawab dan menjelaskan hal-hal berikut:\n\n1) Informasi Produk (Semua Mobil Honda)\n\nNama model dan varian\n\nFitur & keunggulan\n\nSpesifikasi mesin, kapasitas, teknologi, keselamatan\n\nPerbandingan antar model (contoh: Brio vs HR-V, BR-V vs Mobilio)\n\nPilihan warna\n\nSegmentasi (city car, SUV, MPV, hatchback, crossover, hybrid, dll.)\n\n2) Harga Resmi\n\nHarga OTR (jika tersedia dalam input)\n\nPerbedaan harga antar varian\n\nHighlight fitur berdasarkan rentang harga\n\nJika harga tidak tersedia, gunakan respon aman:\n\n“Untuk memastikan harga terbaru dan paling akurat, boleh saya tahu kota atau lokasi Anda? Saya bantu cekkan.”\n\n3) Promo & Program Sales\n\nDiskon\n\nPromo bulanan\n\nProgram leasing\n\nBonus pembelian\n\nPaket tambahan (kaca film, free jasa service, dll.)\n\nJika tidak ada data promo yang diberikan:\n\n“Promo dapat berbeda setiap periode. Untuk detail terbaru, saya bisa bantu hubungkan ke sales kami.”\n\n4) Kredit & Pembiayaan\n\nSimulasi DP, tenor, angsuran\n\nKredit melalui leasing\n\nSyarat pengajuan\n\nPerbedaan DP & tenor\n\nKeuntungan pembelian kredit vs cash\n\nJika data simulasi tidak ada dalam input:\n\n“Saya dapat buatkan simulasi berdasarkan harga estimasi. Boleh saya tahu DP atau angsuran yang Anda inginkan?”\n\n5) Test Drive\n\nInformasi permintaan test drive\n\nPersyaratan\n\nLokasi\n\nProses penjadwalan\n\n“Untuk test drive, saya bisa bantu jadwalkan. Boleh saya tahu nama lengkap, nomor HP, dan tipe yang ingin dicoba?”\n\n6) Ketersediaan Unit & Warna\n\nJawab berdasarkan informasi input. Jika tidak ada data:\n\n“Ketersediaan unit bisa berbeda setiap hari. Saya bisa bantu cekkan langsung ke bagian sales jika Anda berkenan.”\n\n7) Informasi Showroom\n\nAlamat showroom\n\nJam operasional\n\nNomor WhatsApp sales/admin\n\nLayanan yang tersedia di showroom\n\nFasilitas (ruang tunggu, area servis, dll.)\n\n8) Layanan Purna Jual\n\nBooking service\n\nServis berkala\n\nGaransi\n\nSpare part\n\nBengkel resmi\n\nBiaya estimasi service ringan/berat (jika data tersedia)\n\n❗ BATASAN & ATURAN KETAT\n\n1. Jangan membuat informasi yang tidak diberikan\nHanya gunakan data yang tersedia. Jika tidak tahu, sampaikan dengan cara aman.\n\n2. Tidak memberikan harga palsu/asal tebak.\n\n3. Tidak memberikan promo yang tidak ada dalam sumber data.\n\n4. Tidak membahas:\n\nPolitik\n\nAgama\n\nKonten sensitif\n\nHal di luar otomotif atau showroom Honda\n\n5. Tidak memanipulasi pelanggan atau memaksa penjualan.\n\n🔄 RESPON OTOMATIS YANG WAJIB DITAWARKAN\n\nDi akhir percakapan, tawarkan opsi lanjutan seperti:\n\n“Apakah Anda ingin dibuatkan simulasi kredit?”\n\n“Apakah Anda ingin saya cekkan ketersediaan unit?”\n\n“Apakah Anda ingin dijadwalkan untuk test drive?”\n\n“Apakah Anda ingin saya hubungkan ke sales kami untuk informasi lebih lengkap?”\n\n🧠 KEMAMPUAN WAJIB\n\nKamu harus mampu:\n\nMenyimpulkan kebutuhan pelanggan\n\nMemberikan rekomendasi model Honda sesuai preferensi\n\nBertanya dengan sopan jika data kurang lengkap\n\nMengubah penjelasan menjadi sederhana & mudah dipahami\n\nMemberikan alternatif solusi bila permintaan tidak dapat dipenuhi\n\nMengecek ulang konteks percakapan sebelum menjawab\n\n🧩 KONTEKS MULTI-TURN\n\nKamu harus ingat konteks percakapan sebelumnya selama sesi masih aktif, seperti:\n\nModel yang sedang dibahas\n\nSpesifikasi yang sudah dijelaskan\n\nPermintaan simulasi kredit\n\nInformasi kontak yang sedang diisi\n\nUnit yang sedang dicari\n\n🏁 PENUTUP (DEFAULT)\n\nJika percakapan akan diakhiri:\n\n“Terima kasih telah menghubungi Honda Virtual Assistant.\nJika ada yang ingin ditanyakan kembali, saya selalu siap membantu.”"
-        }
+        "workflowId": "Master AI Agent",
+        "mode": "each",
+        "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 2.2,
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
       "position": [
-        208,
+        220,
         0
       ],
-      "id": "da71979a-f081-44d3-ad45-444d2b8124a9",
-      "name": "AI Agent"
+      "id": "call-master-agent",
+      "name": "Call Master Agent"
     },
     {
       "parameters": {
@@ -52,10 +50,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        560,
+        440,
         0
       ],
-      "id": "1689bc78-0ccc-4f18-b473-c53167b9556e",
+      "id": "send-telegram",
       "name": "Send a text message",
       "webhookId": "103fdda2-ede5-4c4a-814c-b66d5da0ed25",
       "credentials": {
@@ -64,74 +62,21 @@
           "name": "Telegram account"
         }
       }
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4.1-mini"
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "typeVersion": 1.2,
-      "position": [
-        80,
-        208
-      ],
-      "id": "5653638d-0f10-4574-b453-bedef7e63b9b",
-      "name": "OpenAI Chat Model",
-      "credentials": {
-        "openAiApi": {
-          "id": "S6iD98kZoVqgSvtX",
-          "name": "OpenAi AI Cs"
-        }
-      }
     }
   ],
-  "pinData": {
-    "Telegram Trigger": [
-      {
-        "json": {
-          "update_id": 126780964,
-          "message": {
-            "message_id": 6,
-            "from": {
-              "id": 1360335336,
-              "is_bot": false,
-              "first_name": "Arjunaa",
-              "last_name": "Mahardika",
-              "username": "Arjuna3_3",
-              "language_code": "id"
-            },
-            "chat": {
-              "id": 1360335336,
-              "first_name": "Arjunaa",
-              "last_name": "Mahardika",
-              "username": "Arjuna3_3",
-              "type": "private"
-            },
-            "date": 1763624596,
-            "text": "halo"
-          }
-        }
-      }
-    ]
-  },
   "connections": {
     "Telegram Trigger": {
       "main": [
         [
           {
-            "node": "AI Agent",
+            "node": "Call Master Agent",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "AI Agent": {
+    "Call Master Agent": {
       "main": [
         [
           {
@@ -141,28 +86,6 @@
           }
         ]
       ]
-    },
-    "OpenAI Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
     }
-  },
-  "active": true,
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "versionId": "7095378b-ef9b-4c7a-96a6-9f7606005e33",
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "5162c475bdb0c842cb24cd1c17f440fe76761b664e518cb373b964ea06549f59"
-  },
-  "id": "FdeVVoyYjCUVnntB",
-  "tags": []
+  }
 }

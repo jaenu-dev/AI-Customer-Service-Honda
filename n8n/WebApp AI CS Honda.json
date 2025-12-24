@@ -8,50 +8,30 @@
         "responseMode": "lastNode",
         "options": {}
       },
-      "id": "webhook-trigger",
-      "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        460,
-        460
+        0,
+        0
       ],
+      "id": "webhook-trigger",
+      "name": "Webhook",
       "webhookId": "honda-ai-cs"
     },
     {
       "parameters": {
-        "options": {
-          "systemMessage": "Kamu adalah Customer Service Senior untuk Honda Indonesia bernama \"HondaBot\".\nTugasmu adalah menjawab pertanyaan pelanggan dengan ramah, profesional, dan persuasif.\n\nPengetahuan Produk:\n- Honda Brio: Irit, lincah, cocok untuk anak muda. Harga mulai 160jt-an.\n- Honda HR-V: SUV stylish, fitur Honda Sensing lengkap.\n- Honda CR-V: SUV premium, tenaga turbo/hybrid.\n\nAturan Menjawab:\n1. Gunakan Bahasa Indonesia yang sopan tapi santai.\n2. Jika ditanya harga, berikan kisaran dan sarankan hubungi dealer terdekat.\n3. Jika tidak tahu jawabannya, jangan mengarang. Bilang \"Mohon maaf, untuk info detail itu saya perlu cek ke tim sales kami.\"\n4. Selalu akhiri dengan menawarkan bantuan lain, misal \"Ada lagi yang ingin ditanyakan Kak?\""
-        }
-      },
-      "id": "ai-agent",
-      "name": "AI Agent",
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 1,
-      "position": [
-        680,
-        460
-      ]
-    },
-    {
-      "parameters": {
-        "model": "gpt-3.5-turbo",
+        "workflowId": "Master AI Agent",
+        "mode": "each",
         "options": {}
       },
-      "id": "openai-model",
-      "name": "OpenAI Chat Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        680,
-        660
+        220,
+        0
       ],
-      "credentials": {
-        "openAiApi": {
-          "id": "1",
-          "name": "OpenAI Account"
-        }
-      }
+      "id": "call-master-agent",
+      "name": "Call Master Agent"
     },
     {
       "parameters": {
@@ -59,14 +39,14 @@
         "responseBody": "={{ JSON.stringify({ answer: $json.output }) }}",
         "options": {}
       },
-      "id": "respond-to-webhook",
-      "name": "Respond to Webhook",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        1000,
-        460
-      ]
+        440,
+        0
+      ],
+      "id": "respond-to-webhook",
+      "name": "Respond to Webhook"
     }
   ],
   "connections": {
@@ -74,25 +54,14 @@
       "main": [
         [
           {
-            "node": "AI Agent",
+            "node": "Call Master Agent",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "OpenAI Chat Model": {
-      "ai_language_model": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_language_model",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "AI Agent": {
+    "Call Master Agent": {
       "main": [
         [
           {

@@ -1,0 +1,587 @@
+{
+  "name": "Master AI Agents",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "7829cf96-24dd-453c-aa4d-8f0870a30d2d",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1456,
+        -912
+      ],
+      "webhookId": "0c79af73-3b47-44f8-a422-6469fa8863da",
+      "credentials": {
+        "telegramApi": {
+          "id": "y1pApmFvkGtbUsk6",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "question",
+              "value": "={{$json.message.text}}"
+            },
+            {
+              "name": "user_id",
+              "value": "={{$json.message.chat.id}}"
+            },
+            {
+              "name": "source",
+              "value": "telegram"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4abaa236-1c41-4646-bd33-b243662e5616",
+      "name": "Norm Telegram",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -1200,
+        -912
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "question",
+              "value": "={{$json.body.question}}"
+            },
+            {
+              "name": "user_id",
+              "value": "={{$json.body.user_id}}"
+            },
+            {
+              "name": "session_id",
+              "value": "={{$json.body.session_id}}"
+            },
+            {
+              "name": "source",
+              "value": "web"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fe9562be-69a4-4327-81a0-a6d3e9c6ebe2",
+      "name": "Norm WebApp",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -1248,
+        -576
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "chat_history",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_id",
+              "fieldValue": "={{ $json.user_id }}"
+            },
+            {
+              "fieldId": "question",
+              "fieldValue": "={{ $json.question }}"
+            },
+            {
+              "fieldId": "session_id",
+              "fieldValue": "={{ $json.session_id }}"
+            }
+          ]
+        }
+      },
+      "id": "c4894e88-893f-40e9-935a-7babee4b63d8",
+      "name": "Supabase - Save Question",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        -704
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "zkBoCIY3ZTnjc8wV",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "honda-ai-cs",
+          "mode": "list",
+          "cachedResultName": "honda-ai-cs"
+        },
+        "options": {
+          "pineconeNamespace": "Honda Ai CS"
+        }
+      },
+      "id": "2dba32c0-d825-4071-965d-9daa735dc515",
+      "name": "Pinecone Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -48
+      ],
+      "credentials": {
+        "pineconeApi": {
+          "id": "iTxbVOEQNbmJfVkR",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "knowledge_base",
+        "description": "WAJIB DIGUNAKAN untuk setiap pertanyaan tentang Mobil Honda, Harga, Brosur, Promo, dan Spesifikasi. Jangan menjawab dari ingatan sendiri, HARUS cari di sini dulu."
+      },
+      "id": "b3540927-5aad-46cc-b264-b7a64d7bed4e",
+      "name": "Knowledge Base Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "735e596a-81eb-4224-8f84-e4967a92af70",
+      "name": "Google Search (SerpAPI)",
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -464
+      ],
+      "credentials": {
+        "serpApi": {
+          "id": "0SjLSjGwuV4D9cAF",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.question }}",
+        "options": {
+          "systemMessage": "Anda adalah Asisten Virtual Honda. Ikuti PROSEDUR PRIORITAS ini untuk setiap pertanyaan:\n\n1. WAJIB cari dulu di `knowledge_base`. Ini adalah sumber kebenaran utama untuk Produk, Harga, dan Spesifikasi Honda.\n2. Jika dan HANYA JIKA tidak ketemu di knowledge base, gunakan `Google Search` (SerpAPI).\n3. Gunakan pengetahuan umum (chat biasa) hanya sebagai opsi terakhir jika langkah 1 dan 2 gagal.\n\nJANGAN PERNAH menjawab pertanyaan produk langsung dari ingatan tanpa mengecek knowledge base."
+        }
+      },
+      "id": "cac37507-48c7-47f9-ac2a-e164ae863689",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -704
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "chat_history",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "=id",
+              "condition": "eq",
+              "keyValue": "={{ $('Supabase - Save Question').item.json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "answer",
+              "fieldValue": "={{ $json.output }}"
+            }
+          ]
+        }
+      },
+      "id": "4ce10b5f-59bc-454a-894b-27fadf1fd141",
+      "name": "Supabase - Save Answer",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        -704
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "zkBoCIY3ZTnjc8wV",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $('Norm Telegram').isExecuted ? 'telegram' : 'web' }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "telegram"
+            },
+            {
+              "value2": "web",
+              "output": 1
+            }
+          ]
+        }
+      },
+      "id": "79052635-4da9-4ce2-9ed4-b572e4b25cfd",
+      "name": "Router by Source",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        256,
+        -736
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.user_id}}",
+        "text": "={{ $json.answer }}",
+        "additionalFields": {}
+      },
+      "id": "b85e142c-8382-4d8e-8a7e-f29b99171a9e",
+      "name": "Telegram Response",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        432,
+        -800
+      ],
+      "webhookId": "56a79a39-3e47-42c5-b758-3dfb3339d87c",
+      "credentials": {
+        "telegramApi": {
+          "id": "y1pApmFvkGtbUsk6",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -416,
+        -416
+      ],
+      "id": "09d56b37-f687-4c9b-859e-344392132527",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "6lcMJ9fRJNeabHz7",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -240,
+        160
+      ],
+      "id": "116a3da1-3a58-40f3-b201-72ef40ac288d",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "6lcMJ9fRJNeabHz7",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "honda-ai-cs",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1504,
+        -560
+      ],
+      "id": "ff223bdf-b581-4ec3-8f62-8645e17be1cd",
+      "name": "Webhook",
+      "webhookId": "b776ef39-543c-4887-a6c3-92a349ae3f7e"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        480,
+        -624
+      ],
+      "id": "61da295b-dd95-4e45-a5cf-9c68cb81b4e7",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        112,
+        -160
+      ],
+      "id": "22a594f7-bdc5-49bc-99f9-a5b9cf8f55d8",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "OlYGkCfN6NupiamN",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 126781018,
+          "message": {
+            "message_id": 113,
+            "from": {
+              "id": 1360335336,
+              "is_bot": false,
+              "first_name": "Arjunaa",
+              "last_name": "Mahardika",
+              "username": "Arjuna3_3",
+              "language_code": "id"
+            },
+            "chat": {
+              "id": 1360335336,
+              "first_name": "Arjunaa",
+              "last_name": "Mahardika",
+              "username": "Arjuna3_3",
+              "type": "private"
+            },
+            "date": 1765644202,
+            "text": "halo"
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Norm Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Norm Telegram": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Save Question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Norm WebApp": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Save Question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Save Question": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Save Answer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Save Answer": {
+      "main": [
+        [
+          {
+            "node": "Router by Source",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Router by Source": {
+      "main": [
+        [
+          {
+            "node": "Telegram Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Knowledge Base Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Search (SerpAPI)": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Knowledge Base Tool",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Norm WebApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Knowledge Base Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "89aea342-0923-4e17-8b0e-062b5775b51f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5162c475bdb0c842cb24cd1c17f440fe76761b664e518cb373b964ea06549f59"
+  },
+  "id": "MyRSNau4hbxVoQeA",
+  "tags": []
+}
