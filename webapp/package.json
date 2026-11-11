@@ -1,0 +1,20 @@
+{
+  "name": "honda-ai-cs-webapp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Web chat untuk Honda AI Customer Service (RAG dengan n8n + Pinecone)",
+  "main": "index.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.87.1",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2"
+  }
+}

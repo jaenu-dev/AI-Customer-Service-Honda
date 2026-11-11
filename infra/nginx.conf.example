@@ -1,0 +1,25 @@
+# Contoh reverse proxy: hanya endpoint webhook yang dibuka ke publik,
+# editor n8n tetap hanya bisa diakses dari localhost / VPN.
+server {
+    listen 443 ssl;
+    server_name ai-cs.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/ai-cs.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/ai-cs.example.com/privkey.pem;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Content-Type-Options nosniff always;
+    server_tokens off;
+
+    location /webhook/ {
+        limit_except POST { deny all; }
+        proxy_pass http://127.0.0.1:5678;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        return 404;
+    }
+}

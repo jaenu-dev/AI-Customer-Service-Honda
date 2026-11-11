@@ -1,0 +1,23 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Data runtime n8n (database, credential, encryption key, log)
+n8n-data/
+.n8n/
+*.sqlite
+*.sqlite-journal
+crash.journal
+n8nEventLog*.log
+n8n/config
+
+# Lain-lain
+*.log
+*.zip
+.DS_Store
+Thumbs.db
+.vercel

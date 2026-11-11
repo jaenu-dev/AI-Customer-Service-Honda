@@ -1,0 +1,91 @@
+{
+  "name": "Telegram AI CS Honda",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "telegram-trigger",
+      "name": "Telegram Trigger",
+      "webhookId": "e94eb5b4-5d16-4e22-b3e2-645ca3636abb",
+      "credentials": {
+        "telegramApi": {
+          "id": "y1pApmFvkGtbUsk6",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": "Master AI Agent",
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "call-master-agent",
+      "name": "Call Master Agent"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "send-telegram",
+      "name": "Send a text message",
+      "webhookId": "103fdda2-ede5-4c4a-814c-b66d5da0ed25",
+      "credentials": {
+        "telegramApi": {
+          "id": "y1pApmFvkGtbUsk6",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Call Master Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Master Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

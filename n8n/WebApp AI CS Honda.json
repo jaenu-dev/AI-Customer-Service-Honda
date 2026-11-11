@@ -1,0 +1,83 @@
+{
+  "name": "WebApp AI CS Honda",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "honda-ai-cs",
+        "responseMode": "lastNode",
+        "options": {},
+        "authentication": "headerAuth"
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "webhookId": "honda-ai-cs",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Honda Webhook Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": "Master AI Agent",
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "call-master-agent",
+      "name": "Call Master Agent"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ answer: $json.output }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "respond-to-webhook",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Call Master Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Master Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

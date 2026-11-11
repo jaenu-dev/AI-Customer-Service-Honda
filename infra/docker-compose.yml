@@ -1,0 +1,20 @@
+services:
+  n8n:
+    image: n8nio/n8n:${N8N_VERSION:?Set N8N_VERSION di infra/.env}
+    restart: unless-stopped
+    # Hanya bind ke localhost: editor n8n tidak terbuka ke jaringan/internet.
+    # Untuk webhook publik, pasang reverse proxy (nginx) yang hanya meneruskan /webhook/*.
+    ports:
+      - "127.0.0.1:5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:?Set N8N_ENCRYPTION_KEY di infra/.env}
+      - WEBHOOK_URL=${WEBHOOK_URL:-}
+      - GENERIC_TIMEZONE=Asia/Jakarta
+      - N8N_DIAGNOSTICS_ENABLED=false
+    volumes:
+      # Data n8n (database, credential terenkripsi, log) disimpan di volume, bukan di folder repo
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:
